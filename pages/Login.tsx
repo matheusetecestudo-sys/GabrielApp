@@ -93,16 +93,15 @@ export const Login: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-md animate-fade-in-up">
         
-        {/* MAIN CARD - TEMPORARY RED BACKGROUND FOR DEBUGGING */}
-        <div className="bg-red-500 border-4 border-black dark:border-white shadow-[12px_12px_0px_0px_rgba(0,0,255,1)] p-8 md:p-10 relative overflow-hidden transition-all duration-300">
-            <h1 className="text-white text-5xl font-black uppercase mb-4">TESTE DE LOGIN</h1> {/* Added for visibility */}
+        {/* MAIN CARD */}
+        <div className="bg-white dark:bg-[#1A1A1A] border-4 border-black dark:border-white shadow-[12px_12px_0px_0px_rgba(0,0,255,1)] p-8 md:p-10 relative overflow-hidden transition-all duration-300">
             
             {/* Header / Brand */}
             <div className="mb-6 border-b-4 border-primary pb-4">
-                <h1 className="text-white text-3xl font-black uppercase tracking-tighter leading-none mb-1">
+                <h1 className="text-black dark:text-white text-3xl font-black uppercase tracking-tighter leading-none mb-1">
                     {view === 'LOGIN' ? 'Acesso Restrito' : view === 'REGISTER' ? 'Novo Operador' : 'Recuperar Chave'}
                 </h1>
-                <p className="text-gray-200 font-bold uppercase text-[10px] tracking-widest">
+                <p className="text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px] tracking-widest">
                     Rino Score System v2.0
                 </p>
             </div>
@@ -149,8 +148,8 @@ export const Login: React.FC = () => {
                     </button>
 
                     <div className="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed border-gray-300">
-                        <button type="button" onClick={() => { clearMessage(); setView('REGISTER'); }} className="text-xs font-bold uppercase text-gray-200 hover:text-primary hover:underline">Solicitar Cadastro</button>
-                        <button type="button" onClick={() => { clearMessage(); setView('RECOVER'); }} className="text-xs font-bold uppercase text-gray-200 hover:text-primary hover:underline">Esqueci a Senha</button>
+                        <button type="button" onClick={() => { clearMessage(); setView('REGISTER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Solicitar Cadastro</button>
+                        <button type="button" onClick={() => { clearMessage(); setView('RECOVER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Esqueci a Senha</button>
                     </div>
                 </form>
             )}
@@ -203,7 +202,7 @@ export const Login: React.FC = () => {
                         {isLoading ? 'Enviando...' : 'Cadastrar'}
                     </button>
 
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-200 hover:text-black hover:underline text-center">
+                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black hover:underline text-center">
                         Voltar para Login
                     </button>
                 </form>
@@ -212,7 +211,7 @@ export const Login: React.FC = () => {
             {/* --- VIEW: RECOVER --- */}
             {view === 'RECOVER' && (
                 <form onSubmit={handleRecover} className="flex flex-col gap-5 animate-fade-in-up">
-                    <p className="text-sm font-bold text-gray-200">Informe seu e-mail para receber um link de redefinição de chave de segurança.</p>
+                    <p className="text-sm font-bold text-gray-500">Informe seu e-mail para receber um link de redefinição de chave de segurança.</p>
                     
                     <div className="relative">
                         <input 
@@ -233,7 +232,7 @@ export const Login: React.FC = () => {
                         {isLoading ? 'Processando...' : 'Enviar Link'}
                     </button>
 
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-200 hover:text-black hover:underline text-center">
+                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black hover:underline text-center">
                         Cancelar
                     </button>
                 </form>
