@@ -186,9 +186,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [timeRange, setTimeRange] = useState<TimeRange>('TUDO');
   
   const [settings, setSettings] = useState<AppSettings>(() => {
-    const saved = localStorage.getItem('app-settings');
-    const parsed = saved ? JSON.parse(saved) : defaultSettings;
-    const safeSettings = { ...defaultSettings, ...parsed };
+    let parsedSettings = defaultSettings;
+    try {
+        const saved = localStorage.getItem('app-settings');
+        if (saved) {
+            parsedSettings = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error("Failed to parse app-settings from localStorage, using default.", e);
+        // Fallback to defaultSettings already handled by initialization
+    }
+    
+    const safeSettings = { ...defaultSettings, ...parsedSettings };
     
     // Migrations / Safety Checks
     if (!safeSettings.company) safeSettings.company = defaultSettings.company;

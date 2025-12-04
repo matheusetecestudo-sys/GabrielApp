@@ -3,7 +3,13 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '../integrations/supabase/client'; // Importar o cliente Supabase
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  currentTheme: 'Claro' | 'Escuro';
+}
+
+export const Login: React.FC<LoginProps> = ({ currentTheme }) => {
+  const isDark = currentTheme === 'Escuro';
+
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center p-4 bg-gray-100 dark:bg-black overflow-hidden transition-colors duration-300">
       
@@ -78,7 +84,7 @@ export const Login: React.FC = () => {
                         },
                     },
                 }}
-                theme="light" // Definir tema inicial como light, será ajustado pelo AppContext
+                theme={isDark ? 'dark' : 'light'} // Aplicar o tema dinamicamente
                 localization={{
                     variables: {
                         sign_in: {

@@ -45,7 +45,7 @@ const AppContent: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <Login />;
+    return <Login currentTheme={settings.appearance.theme} />;
   }
 
   return (
