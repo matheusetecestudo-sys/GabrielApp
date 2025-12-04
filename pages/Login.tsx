@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -94,15 +93,16 @@ export const Login: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-md animate-fade-in-up">
         
-        {/* MAIN CARD */}
-        <div className="bg-white dark:bg-[#111] border-4 border-black dark:border-white shadow-[12px_12px_0px_0px_rgba(0,0,255,1)] p-8 md:p-10 relative overflow-hidden transition-all duration-300">
+        {/* MAIN CARD - TEMPORARY RED BACKGROUND FOR DEBUGGING */}
+        <div className="bg-red-500 border-4 border-black dark:border-white shadow-[12px_12px_0px_0px_rgba(0,0,255,1)] p-8 md:p-10 relative overflow-hidden transition-all duration-300">
+            <h1 className="text-white text-5xl font-black uppercase mb-4">TESTE DE LOGIN</h1> {/* Added for visibility */}
             
             {/* Header / Brand */}
             <div className="mb-6 border-b-4 border-primary pb-4">
-                <h1 className="text-black dark:text-white text-3xl font-black uppercase tracking-tighter leading-none mb-1">
+                <h1 className="text-white text-3xl font-black uppercase tracking-tighter leading-none mb-1">
                     {view === 'LOGIN' ? 'Acesso Restrito' : view === 'REGISTER' ? 'Novo Operador' : 'Recuperar Chave'}
                 </h1>
-                <p className="text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px] tracking-widest">
+                <p className="text-gray-200 font-bold uppercase text-[10px] tracking-widest">
                     Rino Score System v2.0
                 </p>
             </div>
@@ -110,7 +110,7 @@ export const Login: React.FC = () => {
             {/* Notification Area */}
             {message && (
                 <div className={`mb-6 p-3 text-xs font-black uppercase tracking-wide border-l-4 animate-fade-in-up
-                    ${message.type === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-500 text-red-600' : 'bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600'}
+                    ${message.type === 'error' ? 'bg-red-200 border-red-500 text-red-800' : 'bg-green-200 border-green-500 text-green-800'}
                 `}>
                     {message.text}
                 </div>
@@ -122,35 +122,35 @@ export const Login: React.FC = () => {
                     <div className="relative">
                         <input 
                             type="email" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 pl-10 text-black dark:text-white font-bold uppercase text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
                             placeholder="EMAIL"
                             value={loginData.email}
                             onChange={e => setLoginData({...loginData, email: e.target.value})}
                         />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">person</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">person</span>
                     </div>
                     <div className="relative">
                         <input 
                             type="password" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 pl-10 text-black dark:text-white font-bold text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold text-sm brutal-input"
                             placeholder="SENHA"
                             value={loginData.password}
                             onChange={e => setLoginData({...loginData, password: e.target.value})}
                         />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">key</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">key</span>
                     </div>
 
                     <button 
                         type="submit" 
                         disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn flex items-center justify-center gap-2"
+                        className="mt-2 h-14 w-full bg-black text-white font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn flex items-center justify-center gap-2"
                     >
                         {isLoading ? <span className="animate-pulse">Validando...</span> : <><span>Entrar</span><span className="material-symbols-outlined">login</span></>}
                     </button>
 
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed border-gray-300 dark:border-gray-800">
-                        <button type="button" onClick={() => { clearMessage(); setView('REGISTER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Solicitar Cadastro</button>
-                        <button type="button" onClick={() => { clearMessage(); setView('RECOVER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Esqueci a Senha</button>
+                    <div className="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed border-gray-300">
+                        <button type="button" onClick={() => { clearMessage(); setView('REGISTER'); }} className="text-xs font-bold uppercase text-gray-200 hover:text-primary hover:underline">Solicitar Cadastro</button>
+                        <button type="button" onClick={() => { clearMessage(); setView('RECOVER'); }} className="text-xs font-bold uppercase text-gray-200 hover:text-primary hover:underline">Esqueci a Senha</button>
                     </div>
                 </form>
             )}
@@ -161,34 +161,34 @@ export const Login: React.FC = () => {
                     <div className="relative">
                         <input 
                             type="text" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 pl-10 text-black dark:text-white font-bold uppercase text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
                             placeholder="NOME COMPLETO"
                             value={registerData.name}
                             onChange={e => setRegisterData({...registerData, name: e.target.value})}
                         />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">badge</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">badge</span>
                     </div>
                     <div className="relative">
                         <input 
                             type="email" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 pl-10 text-black dark:text-white font-bold uppercase text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
                             placeholder="EMAIL"
                             value={registerData.email}
                             onChange={e => setRegisterData({...registerData, email: e.target.value})}
                         />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">mail</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">mail</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <input 
                             type="password" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 text-black dark:text-white font-bold text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 text-black font-bold text-sm brutal-input"
                             placeholder="SENHA"
                             value={registerData.password}
                             onChange={e => setRegisterData({...registerData, password: e.target.value})}
                         />
                         <input 
                             type="password" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 text-black dark:text-white font-bold text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 text-black font-bold text-sm brutal-input"
                             placeholder="CONFIRMAR"
                             value={registerData.confirmPassword}
                             onChange={e => setRegisterData({...registerData, confirmPassword: e.target.value})}
@@ -198,12 +198,12 @@ export const Login: React.FC = () => {
                     <button 
                         type="submit" 
                         disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-primary text-white font-black uppercase tracking-[0.2em] hover:brightness-110 border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#FFF] active:translate-y-[2px] active:shadow-none brutal-btn"
+                        className="mt-2 h-14 w-full bg-primary text-white font-black uppercase tracking-[0.2em] hover:brightness-110 border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_#000] active:translate-y-[2px] active:shadow-none brutal-btn"
                     >
                         {isLoading ? 'Enviando...' : 'Cadastrar'}
                     </button>
 
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black dark:hover:text-white hover:underline text-center">
+                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-200 hover:text-black hover:underline text-center">
                         Voltar para Login
                     </button>
                 </form>
@@ -212,28 +212,28 @@ export const Login: React.FC = () => {
             {/* --- VIEW: RECOVER --- */}
             {view === 'RECOVER' && (
                 <form onSubmit={handleRecover} className="flex flex-col gap-5 animate-fade-in-up">
-                    <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Informe seu e-mail para receber um link de redefinição de chave de segurança.</p>
+                    <p className="text-sm font-bold text-gray-200">Informe seu e-mail para receber um link de redefinição de chave de segurança.</p>
                     
                     <div className="relative">
                         <input 
                             type="email" 
-                            className="w-full h-12 bg-gray-50 dark:bg-black border-4 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none p-3 pl-10 text-black dark:text-white font-bold uppercase text-sm brutal-input"
+                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
                             placeholder="SEU EMAIL CADASTRADO"
                             value={recoverEmail}
                             onChange={e => setRecoverEmail(e.target.value)}
                         />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">send</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">send</span>
                     </div>
 
                     <button 
                         type="submit" 
                         disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn"
+                        className="mt-2 h-14 w-full bg-black text-white font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn"
                     >
                         {isLoading ? 'Processando...' : 'Enviar Link'}
                     </button>
 
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black dark:hover:text-white hover:underline text-center">
+                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-200 hover:text-black hover:underline text-center">
                         Cancelar
                     </button>
                 </form>
