@@ -1,88 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-
-type ViewState = 'LOGIN' | 'REGISTER' | 'RECOVER';
+import React from 'react';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { supabase } from '../integrations/supabase/client'; // Importar o cliente Supabase
 
 export const Login: React.FC = () => {
-  const navigate = useNavigate();
-  const { login, isAuthenticated } = useApp();
-  const [view, setView] = useState<ViewState>('LOGIN');
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
-
-  // Redirect if already logged in
-  useEffect(() => {
-      if (isAuthenticated) {
-          navigate('/dashboard');
-      }
-  }, [isAuthenticated, navigate]);
-
-  // Form States
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
-  const [recoverEmail, setRecoverEmail] = useState('');
-
-  const clearMessage = () => setMessage(null);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    clearMessage();
-    
-    if (!loginData.email || !loginData.password) {
-        setMessage({ type: 'error', text: 'Preencha todos os campos.' });
-        return;
-    }
-
-    setIsLoading(true);
-    setTimeout(() => {
-        setIsLoading(false);
-        login(); // Set auth state in context
-        navigate('/dashboard');
-    }, 1500);
-  };
-
-  const handleRegister = (e: React.FormEvent) => {
-      e.preventDefault();
-      clearMessage();
-
-      if (!registerData.name || !registerData.email || !registerData.password) {
-          setMessage({ type: 'error', text: 'Todos os campos são obrigatórios.' });
-          return;
-      }
-
-      if (registerData.password !== registerData.confirmPassword) {
-          setMessage({ type: 'error', text: 'As senhas não coincidem.' });
-          return;
-      }
-
-      setIsLoading(true);
-      setTimeout(() => {
-          setIsLoading(false);
-          setMessage({ type: 'success', text: 'Cadastro realizado! Aguardando aprovação do admin.' });
-          setTimeout(() => {
-            setView('LOGIN');
-            setMessage({ type: 'success', text: 'Solicitação enviada. Faça login para testar.' });
-          }, 2000);
-      }, 1500);
-  };
-
-  const handleRecover = (e: React.FormEvent) => {
-      e.preventDefault();
-      clearMessage();
-
-      if (!recoverEmail) {
-          setMessage({ type: 'error', text: 'Informe seu e-mail de cadastro.' });
-          return;
-      }
-
-      setIsLoading(true);
-      setTimeout(() => {
-          setIsLoading(false);
-          setMessage({ type: 'success', text: `Link de recuperação enviado para ${recoverEmail}` });
-      }, 1500);
-  };
-
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center p-4 bg-gray-100 dark:bg-black overflow-hidden transition-colors duration-300">
       
@@ -99,145 +20,99 @@ export const Login: React.FC = () => {
             {/* Header / Brand */}
             <div className="mb-6 border-b-4 border-primary pb-4">
                 <h1 className="text-black dark:text-white text-3xl font-black uppercase tracking-tighter leading-none mb-1">
-                    {view === 'LOGIN' ? 'Acesso Restrito' : view === 'REGISTER' ? 'Novo Operador' : 'Recuperar Chave'}
+                    Acesso Restrito
                 </h1>
                 <p className="text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px] tracking-widest">
                     Rino Score System v2.0
                 </p>
             </div>
 
-            {/* Notification Area */}
-            {message && (
-                <div className={`mb-6 p-3 text-xs font-black uppercase tracking-wide border-l-4 animate-fade-in-up
-                    ${message.type === 'error' ? 'bg-red-200 border-red-500 text-red-800' : 'bg-green-200 border-green-500 text-green-800'}
-                `}>
-                    {message.text}
-                </div>
-            )}
-
-            {/* --- VIEW: LOGIN --- */}
-            {view === 'LOGIN' && (
-                <form onSubmit={handleLogin} className="flex flex-col gap-5 animate-fade-in-up">
-                    <div className="relative">
-                        <input 
-                            type="email" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
-                            placeholder="EMAIL"
-                            value={loginData.email}
-                            onChange={e => setLoginData({...loginData, email: e.target.value})}
-                        />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">person</span>
-                    </div>
-                    <div className="relative">
-                        <input 
-                            type="password" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold text-sm brutal-input"
-                            placeholder="SENHA"
-                            value={loginData.password}
-                            onChange={e => setLoginData({...loginData, password: e.target.value})}
-                        />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">key</span>
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-black text-white font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn flex items-center justify-center gap-2"
-                    >
-                        {isLoading ? <span className="animate-pulse">Validando...</span> : <><span>Entrar</span><span className="material-symbols-outlined">login</span></>}
-                    </button>
-
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed border-gray-300">
-                        <button type="button" onClick={() => { clearMessage(); setView('REGISTER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Solicitar Cadastro</button>
-                        <button type="button" onClick={() => { clearMessage(); setView('RECOVER'); }} className="text-xs font-bold uppercase text-gray-500 hover:text-primary hover:underline">Esqueci a Senha</button>
-                    </div>
-                </form>
-            )}
-
-            {/* --- VIEW: REGISTER --- */}
-            {view === 'REGISTER' && (
-                <form onSubmit={handleRegister} className="flex flex-col gap-4 animate-fade-in-up">
-                    <div className="relative">
-                        <input 
-                            type="text" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
-                            placeholder="NOME COMPLETO"
-                            value={registerData.name}
-                            onChange={e => setRegisterData({...registerData, name: e.target.value})}
-                        />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">badge</span>
-                    </div>
-                    <div className="relative">
-                        <input 
-                            type="email" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
-                            placeholder="EMAIL"
-                            value={registerData.email}
-                            onChange={e => setRegisterData({...registerData, email: e.target.value})}
-                        />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">mail</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <input 
-                            type="password" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 text-black font-bold text-sm brutal-input"
-                            placeholder="SENHA"
-                            value={registerData.password}
-                            onChange={e => setRegisterData({...registerData, password: e.target.value})}
-                        />
-                        <input 
-                            type="password" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 text-black font-bold text-sm brutal-input"
-                            placeholder="CONFIRMAR"
-                            value={registerData.confirmPassword}
-                            onChange={e => setRegisterData({...registerData, confirmPassword: e.target.value})}
-                        />
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-primary text-white font-black uppercase tracking-[0.2em] hover:brightness-110 border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_#000] active:translate-y-[2px] active:shadow-none brutal-btn"
-                    >
-                        {isLoading ? 'Enviando...' : 'Cadastrar'}
-                    </button>
-
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black hover:underline text-center">
-                        Voltar para Login
-                    </button>
-                </form>
-            )}
-
-            {/* --- VIEW: RECOVER --- */}
-            {view === 'RECOVER' && (
-                <form onSubmit={handleRecover} className="flex flex-col gap-5 animate-fade-in-up">
-                    <p className="text-sm font-bold text-gray-500">Informe seu e-mail para receber um link de redefinição de chave de segurança.</p>
-                    
-                    <div className="relative">
-                        <input 
-                            type="email" 
-                            className="w-full h-12 bg-gray-200 border-4 border-gray-300 focus:border-primary focus:outline-none p-3 pl-10 text-black font-bold uppercase text-sm brutal-input"
-                            placeholder="SEU EMAIL CADASTRADO"
-                            value={recoverEmail}
-                            onChange={e => setRecoverEmail(e.target.value)}
-                        />
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">send</span>
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        disabled={isLoading}
-                        className="mt-2 h-14 w-full bg-black text-white font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white border-2 border-transparent transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-[2px] active:shadow-none brutal-btn"
-                    >
-                        {isLoading ? 'Processando...' : 'Enviar Link'}
-                    </button>
-
-                    <button type="button" onClick={() => { clearMessage(); setView('LOGIN'); }} className="mt-2 text-xs font-bold uppercase text-gray-500 hover:text-black hover:underline text-center">
-                        Cancelar
-                    </button>
-                </form>
-            )}
-
+            <Auth
+                supabaseClient={supabase}
+                providers={[]} // Não usar provedores de terceiros a menos que especificado
+                appearance={{
+                    theme: ThemeSupa,
+                    variables: {
+                        default: {
+                            colors: {
+                                brand: 'hsl(235 100% 60%)', // Cor primária do seu tema
+                                brandAccent: 'hsl(235 100% 40%)', // Cor de destaque
+                                defaultButtonBackground: 'black',
+                                defaultButtonBackgroundHover: 'hsl(235 100% 60%)',
+                                defaultButtonBorder: 'black',
+                                inputBackground: 'white',
+                                inputBorder: 'rgb(209 213 219)', // gray-300
+                                inputBorderHover: 'hsl(235 100% 60%)', // primary
+                                inputBorderFocus: 'hsl(235 100% 60%)', // primary
+                                inputLabelText: 'rgb(107 114 128)', // gray-500
+                                inputText: 'black',
+                            },
+                            fontSizes: {
+                                baseButtonText: '0.75rem', // text-xs
+                                baseInput: '0.875rem', // text-sm
+                                baseLabel: '0.625rem', // text-[10px]
+                            },
+                            borderWidths: {
+                                inputBorderWidth: '4px',
+                            },
+                            radii: {
+                                borderRadiusButton: '0',
+                                buttonBorderRadius: '0',
+                                inputBorderRadius: '0',
+                            },
+                        },
+                        dark: {
+                            colors: {
+                                brand: 'hsl(235 100% 60%)',
+                                brandAccent: 'hsl(235 100% 40%)',
+                                defaultButtonBackground: 'white',
+                                defaultButtonBackgroundHover: 'hsl(235 100% 60%)',
+                                defaultButtonBorder: 'white',
+                                inputBackground: 'black',
+                                inputBorder: 'rgb(55 65 81)', // gray-700
+                                inputBorderHover: 'hsl(235 100% 60%)', // primary
+                                inputBorderFocus: 'hsl(235 100% 60%)', // primary
+                                inputLabelText: 'rgb(156 163 175)', // gray-400
+                                inputText: 'white',
+                            },
+                        },
+                    },
+                }}
+                theme="light" // Definir tema inicial como light, será ajustado pelo AppContext
+                localization={{
+                    variables: {
+                        sign_in: {
+                            email_label: 'Email',
+                            password_label: 'Senha',
+                            email_input_placeholder: 'Seu email',
+                            password_input_placeholder: 'Sua senha',
+                            button_label: 'Entrar',
+                            social_provider_text: 'Entrar com {{provider}}',
+                            link_text: 'Já tem uma conta? Entrar',
+                        },
+                        sign_up: {
+                            email_label: 'Email',
+                            password_label: 'Criar Senha',
+                            email_input_placeholder: 'Seu email',
+                            password_input_placeholder: 'Sua senha',
+                            button_label: 'Cadastrar',
+                            social_provider_text: 'Cadastrar com {{provider}}',
+                            link_text: 'Não tem uma conta? Cadastrar',
+                        },
+                        forgotten_password: {
+                            email_label: 'Email',
+                            email_input_placeholder: 'Seu email',
+                            button_label: 'Enviar instruções de recuperação',
+                            link_text: 'Esqueceu sua senha?',
+                        },
+                        update_password: {
+                            password_label: 'Nova Senha',
+                            password_input_placeholder: 'Sua nova senha',
+                            button_label: 'Atualizar Senha',
+                        },
+                    },
+                }}
+            />
         </div>
       </div>
     </div>

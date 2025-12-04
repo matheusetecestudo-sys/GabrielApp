@@ -1,17 +1,18 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Order, Product, Material, AppSettings, TimeRange } from '../types';
+import { useSession } from './SessionContext'; // Importar useSession
+import { supabase } from '../integrations/supabase/client'; // Importar supabase client
 
 interface AppContextType {
   orders: Order[];
   products: Product[];
   materials: Material[];
   settings: AppSettings;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean; // Agora vem do SessionContext
   timeRange: TimeRange;
   setTimeRange: (range: TimeRange) => void;
-  login: () => void;
-  logout: () => void;
+  login: () => void; // Será removido ou adaptado
+  logout: () => void; // Será adaptado para Supabase
   addOrder: (order: Order) => void;
   deleteOrder: (id: string) => void;
   updateOrderStatus: (id: string, status: Order['status']) => void;
@@ -178,16 +179,12 @@ const defaultSettings: AppSettings = {
 };
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useSession(); // Obter isAuthenticated do SessionContext
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [timeRange, setTimeRange] = useState<TimeRange>('TUDO');
   
-  // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-      return localStorage.getItem('auth_token') === 'true';
-  });
-
   const [settings, setSettings] = useState<AppSettings>(() => {
     const saved = localStorage.getItem('app-settings');
     const parsed = saved ? JSON.parse(saved) : defaultSettings;
@@ -232,14 +229,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   }, [settings]);
 
+  // Login e Logout agora são gerenciados pelo Supabase, mas mantemos as funções para compatibilidade
   const login = () => {
-      setIsAuthenticated(true);
-      localStorage.setItem('auth_token', 'true');
+      // A autenticação é gerenciada pelo SessionContext e Supabase
+      console.log("Login handled by Supabase Auth UI");
   };
 
-  const logout = () => {
-      setIsAuthenticated(false);
-      localStorage.removeItem('auth_token');
+  const logout = async () => {
+      await supabase.auth.signOut();
+      console.log("Logged out via Supabase");
   };
 
   const adjustMaterialsForOrder = (order: Order, currentMats: Material[], action: 'CONSUME' | 'RESTORE') => {

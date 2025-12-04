@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
+import { SessionContextProvider, useSession } from './context/SessionContext'; // Importar SessionContextProvider e useSession
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { Orders } from './pages/Orders';
@@ -13,7 +14,8 @@ import { Help } from './pages/Help';
 import { Login } from './pages/Login';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, settings } = useApp();
+  const { settings } = useApp();
+  const { isAuthenticated, isLoading } = useSession(); // Usar useSession para autenticação
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Apply theme class to HTML element
@@ -33,6 +35,14 @@ const AppContent: React.FC = () => {
         document.documentElement.style.fontSize = '16px';
     }
   }, [settings.appearance.density]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-gray-100 dark:bg-black text-black dark:text-white text-xl font-bold uppercase">
+        Carregando...
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Login />;
@@ -73,7 +83,9 @@ const App: React.FC = () => {
   return (
     <AppProvider>
       <Router>
-        <AppContent />
+        <SessionContextProvider> {/* Envolver com SessionContextProvider */}
+          <AppContent />
+        </SessionContextProvider>
       </Router>
     </AppProvider>
   );

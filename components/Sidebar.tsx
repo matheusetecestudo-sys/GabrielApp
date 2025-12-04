@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { supabase } from '../integrations/supabase/client'; // Importar supabase client
 
 interface SidebarProps {
   isOpen: boolean;
@@ -24,13 +24,13 @@ const NavItem: React.FC<{ to: string; icon: string; label: string; onClick: () =
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const { settings, logout } = useApp();
+  const { settings } = useApp(); // Não precisamos mais do logout do useApp diretamente aqui
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => { // Tornar a função assíncrona
       if (window.confirm("Deseja realmente desconectar do sistema?")) {
           onClose();
-          logout(); 
+          await supabase.auth.signOut(); // Chamar o signOut do Supabase
           navigate('/login');
       }
   };
