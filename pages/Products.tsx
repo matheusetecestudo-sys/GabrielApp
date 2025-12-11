@@ -25,16 +25,19 @@ export const Products: React.FC = () => {
   // New "Blueprint" State
   const [tempMaterialName, setTempMaterialName] = useState('');
   const [tempMaterialQty, setTempMaterialQty] = useState('');
+  const [imageUrlInput, setImageUrlInput] = useState('');
 
   const openModal = (product?: Product) => {
     if (product) {
       setEditingProduct(product);
       setFormData({ ...product }); // Clone to avoid reference issues
+      setImageUrlInput(product.image || '');
     } else {
       setEditingProduct(null);
       setFormData({
         name: '', sku: '', cost: '', stock: '', image: '', materials: []
       });
+      setImageUrlInput('');
     }
     setTempMaterialName('');
     setTempMaterialQty('');
@@ -52,12 +55,20 @@ export const Products: React.FC = () => {
     if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-            setFormData((prev: any) => ({ ...prev, image: reader.result as string }));
+            const result = reader.result as string;
+            setFormData((prev: any) => ({ ...prev, image: result }));
+            setImageUrlInput(''); // Clear URL input if file is used
         };
         reader.readAsDataURL(file);
     }
     // Critical: Reset input so same file can be selected again if needed
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const url = e.target.value;
+      setImageUrlInput(url);
+      setFormData((prev: any) => ({ ...prev, image: url }));
   };
 
   const addMaterialToBlueprint = () => {
@@ -168,6 +179,9 @@ export const Products: React.FC = () => {
                             src={product.image} 
                             alt={product.name} 
                             className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-105" 
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = `https://placehold.co/400x400/1a1a1a/FFF?text=${product.name.substring(0,3).toUpperCase()}`;
+                            }}
                         />
                         {/* Stock Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-10 flex justify-between items-end">
@@ -278,6 +292,18 @@ export const Products: React.FC = () => {
                     {/* Image Upload Area */}
                     <div className="flex flex-col gap-2">
                         <label className="text-xs font-black uppercase text-primary mb-1">Visualização do Produto</label>
+                        
+                        {/* URL INPUT FOR HOTLINKING */}
+                         <div className="flex gap-2 mb-2">
+                            <input 
+                                type="text" 
+                                placeholder="OU COLE A URL DA IMAGEM AQUI..." 
+                                className="w-full bg-gray-100 dark:bg-black p-2 text-xs border-2 border-gray-300 dark:border-gray-700 focus:border-primary focus:outline-none"
+                                value={imageUrlInput}
+                                onChange={handleImageUrlChange}
+                            />
+                        </div>
+
                         <input 
                             type="file" 
                             ref={fileInputRef} 
@@ -303,7 +329,7 @@ export const Products: React.FC = () => {
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-400 group-hover:text-primary transition-colors">
                                     <span className="material-symbols-outlined text-5xl mb-2">add_a_photo</span>
-                                    <span className="text-xs font-black uppercase tracking-widest">Carregar Imagem</span>
+                                    <span className="text-xs font-black uppercase tracking-widest">Carregar Arquivo</span>
                                     <span className="text-[10px] font-bold mt-1 opacity-60">Clique para selecionar</span>
                                 </div>
                             )}
@@ -313,6 +339,7 @@ export const Products: React.FC = () => {
                                 type="button"
                                 onClick={() => {
                                     setFormData((prev: any) => ({ ...prev, image: '' }));
+                                    setImageUrlInput('');
                                     if(fileInputRef.current) fileInputRef.current.value = '';
                                 }}
                                 className="self-end text-[10px] font-bold uppercase text-red-500 hover:underline"
